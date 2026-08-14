@@ -52,6 +52,7 @@ export default function VideoCard({ video, onDelete, onEdit }: VideoCardProps) {
               src={video.thumbnailUrl || "https://picsum.photos/seed/placeholder/640/360"}
               alt={video.title}
               fill
+              priority
               className="object-cover group-hover:scale-105 transition-transform duration-500"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
@@ -70,6 +71,7 @@ export default function VideoCard({ video, onDelete, onEdit }: VideoCardProps) {
                 src={video.avatarUrl || video.channelAvatar || "https://i.pravatar.cc/150?img=1"}
                 alt={video.channelName || "Channel"}
                 fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="object-cover"
               />
             </div>

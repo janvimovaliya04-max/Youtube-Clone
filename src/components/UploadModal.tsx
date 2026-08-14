@@ -67,7 +67,7 @@ export default function UploadModal({
     };
 
     return (
-        <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-md flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-100 bg-black/70 backdrop-blur-md flex items-center justify-center p-4">
             <div className="bg-[#121217] border border-white/10 rounded-3xl w-full max-w-lg p-6 shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
                 {/* Header */}
                 <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-4">
@@ -163,7 +163,7 @@ export default function UploadModal({
                         <button
                             type="submit"
                             disabled={loading}
-                            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-sm font-semibold transition-all shadow-lg shadow-cyan-500/20 disabled:opacity-50 cursor-pointer"
+                            className="px-5 py-2.5 rounded-xl bg-linear-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-sm font-semibold transition-all shadow-lg shadow-cyan-500/20 disabled:opacity-50 cursor-pointer"
                         >
                             {loading ? "Uploading..." : "Publish Video"}
                         </button>
