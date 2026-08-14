@@ -31,12 +31,12 @@ export default function WatchPage({ params }: { params: Promise<{ id: string }> 
   const [relatedVideos, setRelatedVideos] = useState<Video[]>([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // 🟢 Like / Dislike State
+  // Like / Dislike State
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
   const [likeCount, setLikeCount] = useState(12400);
 
-  // 🟢 Comments State
+  // Comments State
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState("");
 
@@ -48,7 +48,7 @@ export default function WatchPage({ params }: { params: Promise<{ id: string }> 
       setVideo(current);
       setRelatedVideos(allVideos.filter((v) => String(v.id) !== videoId));
 
-      // 🟢 Load Saved Likes from LocalStorage
+      // Load Saved Likes from LocalStorage
       if (videoId) {
         const savedLikes = localStorage.getItem(`yt_like_${videoId}`);
         if (savedLikes) {
@@ -58,7 +58,7 @@ export default function WatchPage({ params }: { params: Promise<{ id: string }> 
           setLikeCount(data.count || 12400);
         }
 
-        // 🟢 Load Saved Comments from LocalStorage
+        // Load Saved Comments from LocalStorage
         const savedComments = localStorage.getItem(`yt_comments_${videoId}`);
         if (savedComments) {
           setComments(JSON.parse(savedComments));
@@ -88,7 +88,7 @@ export default function WatchPage({ params }: { params: Promise<{ id: string }> 
     loadData();
   }, [videoId]);
 
-  // 🔴 Like Toggle Handler
+  // Like Toggle Handler
   const handleLike = () => {
     let nextLiked = !liked;
     let nextDisliked = false;
@@ -107,7 +107,7 @@ export default function WatchPage({ params }: { params: Promise<{ id: string }> 
     );
   };
 
-  // 🔴 Dislike Toggle Handler
+  // Dislike Toggle Handler
   const handleDislike = () => {
     let nextDisliked = !disliked;
     let nextLiked = false;
@@ -123,7 +123,7 @@ export default function WatchPage({ params }: { params: Promise<{ id: string }> 
     );
   };
 
-  // 🟡 Add Comment Handler
+  // Add Comment Handler
   const handleAddComment = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newComment.trim()) return;
@@ -286,7 +286,7 @@ export default function WatchPage({ params }: { params: Promise<{ id: string }> 
                 </div>
               </div>
 
-              {/* 🟢 INTERACTIVE COMMENTS SECTION */}
+              {/* INTERACTIVE COMMENTS SECTION */}
               <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 flex flex-col gap-6 shadow-xl">
                 <div className="flex items-center gap-2">
                   <MessageSquare size={22} className="text-cyan-400" />

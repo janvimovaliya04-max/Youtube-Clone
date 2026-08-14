@@ -20,18 +20,18 @@ export default function TrashPage() {
     }, []);
 
     const handleRestore = async (id: string) => {
-        // 🟢 1. LocalStorage trash mathi video melvo
+        // 1. LocalStorage trash mathi video melvo
         const restoredVideo = restoreFromTrash(id);
 
         if (restoredVideo) {
-            // 🟢 2. MockAPI / Main Store ma paacho add karo
+            // 2. MockAPI / Main Store ma paacho add karo
             try {
                 await createVideo(restoredVideo); // Tamaro backend / API create function
             } catch (err) {
                 console.log("Error restoring to API, local restore done.");
             }
 
-            // 🟢 3. Trash state update karo
+            // 3. Trash state update karo
             setTrashVideos(getTrashVideos());
             alert(`"${restoredVideo.title}" restored successfully! Go to Home page.`);
         }

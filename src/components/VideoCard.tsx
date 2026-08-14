@@ -22,16 +22,16 @@ export default function VideoCard({ video, onDelete, onEdit }: VideoCardProps) {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async (e: React.MouseEvent) => {
-    e.preventDefault();   // 👈 Navigation stop kare chhe
-    e.stopPropagation();  // 👈 Parent card link trigger thavathi atkave chhe
+    e.preventDefault();   // Navigation stop kare chhe
+    e.stopPropagation();  // Parent card link trigger thavathi atkave chhe
 
     if (confirm(`Are you sure you want to move "${video.title}" to trash?`)) {
       setIsDeleting(true);
 
-      // 🟢 1. Save video object to Trash storage first!
+      // 1. Save video object to Trash storage first!
       moveToTrash(video);
 
-      // 🟢 2. Parent delete handler callback call karo (UI update mate)
+      // 2. Parent delete handler callback call karo (UI update mate)
       if (onDelete) {
         await onDelete(video.id);
       }
@@ -96,7 +96,7 @@ export default function VideoCard({ video, onDelete, onEdit }: VideoCardProps) {
           </div>
         </div>
 
-        {/* 🟡 Actions Wrapper (Placed at Card level for accurate relative positioning) */}
+        {/* Actions Wrapper (Placed at Card level for accurate relative positioning) */}
         <div className="absolute top-5 right-5 z-20 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-200">
 
           {/* EDIT BUTTON */}

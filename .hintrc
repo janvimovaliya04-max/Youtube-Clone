@@ -12,6 +12,7 @@
           "scrollbar-color"
         ]
       }
-    ]
+    ],
+    "typescript-config/consistent-casing": "off"
   }
 }

@@ -72,7 +72,7 @@ export default function Header({ onToggleSidebar, onSearch, onVideoCreated }: He
 
           {/* Right Section: Actions & Profile */}
           <div className="flex items-center gap-3 relative">
-            {/* 🟢 CREATE / UPLOAD BUTTON */}
+            {/* CREATE / UPLOAD BUTTON */}
             <button
               onClick={() => setIsUploadOpen(true)}
               className="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-white/10 border border-white/15 hover:bg-white/20 text-white font-medium text-sm transition-all duration-300 cursor-pointer shadow-lg hover:scale-105"
@@ -98,7 +98,7 @@ export default function Header({ onToggleSidebar, onSearch, onVideoCreated }: He
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-white">User Name</p>
-                    <p className="text-xs text-zinc-400">user@dev.com</p>
+                    <p className="text-xs text-zinc-400">••••@.com</p>
                   </div>
                 </div>
 
@@ -119,7 +119,7 @@ export default function Header({ onToggleSidebar, onSearch, onVideoCreated }: He
         </div>
       </header>
 
-      {/* 🔴 3. UPLOAD MODAL INTEGRATED */}
+      {/* UPLOAD MODAL INTEGRATED */}
       <UploadModal
         isOpen={isUploadOpen}
         onClose={() => setIsUploadOpen(false)}

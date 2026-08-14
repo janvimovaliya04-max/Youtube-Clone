@@ -3,7 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
 import { getVideoById, getVideos } from "@/services/api";
-import { Video } from "@/services/api"; // ✅ Use this everywhere
+import { Video } from "@/services/api"; // Use this everywhere
 import VideoCard from "@/components/VideoCard";
 import Header from "@/components/Header";
 import SidebarDrawer from "@/components/SidebarDrawer";

@@ -73,7 +73,7 @@ export default function Home() {
 
   return (
     <div className="bg-[#0a0a0c] text-white min-h-screen w-full">
-      {/* 1. Header Sticky at Top */}
+      {/* Header Sticky at Top */}
       <div className="sticky top-0 z-50 w-full bg-[#0a0a0c]">
         <Header
           onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
@@ -81,12 +81,13 @@ export default function Home() {
         />
       </div>
 
-      {/* 2. Main Body Container */}
+      {/* Main Body Container */}
       <div className="flex w-full pt-2">
+
         {/* Fixed Left Sidebar Wrapper */}
         <Sidebar isOpen={sidebarOpen} />
 
-        {/* 3. Main Content Container - Directly Target Vertical Scroll */}
+        {/* Main Content Container - Directly Target Vertical Scroll */}
         <main
           className={`flex-1 min-w-0 p-4 lg:p-6 transition-all duration-300 ${sidebarOpen ? "ml-0" : ""
             }`}
@@ -140,7 +141,7 @@ export default function Home() {
             </div>
           )}
 
-          {/* 🔴 Edit Modal Render */}
+          {/* Edit Modal Render */}
           {editingVideo && (
             <EditVideoModal
               video={editingVideo}

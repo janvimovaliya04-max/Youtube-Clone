@@ -76,7 +76,7 @@ export default function ExplorePage() {
             <div className="flex flex-1 overflow-hidden">
                 <Sidebar isOpen={sidebarOpen} />
 
-                {/* 🟢 MAIN CONTAINER: overflow-y-auto added for card scrolling */}
+                {/* MAIN CONTAINER: overflow-y-auto added for card scrolling */}
                 <main className="flex-1 p-4 lg:p-6 overflow-y-auto min-w-0 h-full
                          [&::-webkit-scrollbar]:w-2
                          [&::-webkit-scrollbar-track]:bg-transparent
@@ -91,7 +91,7 @@ export default function ExplorePage() {
                         </span>
                     </div>
 
-                    {/* 🟡 CATEGORY FILTER STRIP */}
+                    {/* CATEGORY FILTER STRIP */}
                     <div className="relative flex items-center mb-6 group">
                         <button
                             type="button"
@@ -111,7 +111,7 @@ export default function ExplorePage() {
                         </button>
                     </div>
 
-                    {/* 🔴 CARDS GRID (SKELETON & VIDEOS) */}
+                    {/* CARDS GRID (SKELETON & VIDEOS) */}
                     {loading ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 pb-10">
                             {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
