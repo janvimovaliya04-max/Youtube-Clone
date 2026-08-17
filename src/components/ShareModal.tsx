@@ -63,11 +63,11 @@ export default function ShareModal({
     // Render Portal directly to body to bypass any container parent overflow issues
     return createPortal(
         <div
-            className="fixed inset-0 z-[999999] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-in fade-in duration-200"
+            className="fixed inset-0 z-999999 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-in fade-in duration-200"
             onClick={onClose}
         >
             <div
-                className="w-full max-w-md bg-[#121214] border border-white/10 p-6 rounded-3xl shadow-2xl flex flex-col gap-5 text-white relative z-[1000000]"
+                className="w-full max-w-md bg-[#121214] border border-white/10 p-6 rounded-3xl shadow-2xl flex flex-col gap-5 text-white relative z-1000000"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
