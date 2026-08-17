@@ -23,16 +23,26 @@ export default function HistoryPage() {
     }, []);
 
     return (
-        <div className="min-h-screen bg-[#0a0a0c] text-white flex flex-col">
-            <Header onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} onSearch={() => { }} />
+        // 🚀 1. Main Outer Wrapper (Sidebar Left, Content Right)
+        <div className="flex h-screen w-screen overflow-hidden bg-[#0a0a0c] text-white">
 
-            <div className="flex flex-1">
-                <Sidebar isOpen={sidebarOpen} />
+            {/* 🚀 2. LEFT SIDE: Full-Height Sidebar (Screen top to bottom) */}
+            <Sidebar 
+                isOpen={sidebarOpen} 
+                onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} 
+            />
 
-                <main className="flex-1 p-4 lg:p-6 overflow-x-hidden min-w-0">
+            {/* 🚀 3. RIGHT SIDE: Header + Main Content */}
+            <div className="flex flex-col flex-1 h-full overflow-hidden">
+                
+                {/* Header (Sidebar ni bajuma) */}
+                <Header onSearch={() => { }} />
+
+                {/* Main Scrollable Content */}
+                <main className="flex-1 p-4 lg:p-6 overflow-y-auto min-w-0">
 
                     <div className="flex flex-row items-center gap-2 mb-6">
-                        <History size={25} />
+                        <History size={25} className="text-cyan-400" />
                         <span className="text-lg font-bold text-white whitespace-nowrap">
                             Watch History
                         </span>

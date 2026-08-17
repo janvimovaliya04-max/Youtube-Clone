@@ -3,10 +3,11 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
 import { getVideoById, getVideos } from "@/services/api";
-import { Video } from "@/services/api"; // Use this everywhere
+import { Video } from "@/services/api";
 import VideoCard from "@/components/VideoCard";
 import Header from "@/components/Header";
 import SidebarDrawer from "@/components/SidebarDrawer";
+import ShareModal from "@/components/ShareModal";
 import { ThumbsUp, ThumbsDown, Share2, Download, MoreHorizontal } from "lucide-react";
 
 interface Comment {
@@ -18,7 +19,7 @@ interface Comment {
   likes: number;
 }
 
-function WatchContent() {
+function WatchContent({ onOpenShare }: { onOpenShare: (title: string) => void }) {
   const searchParams = useSearchParams();
   const videoId = searchParams.get("v");
 
@@ -148,11 +149,10 @@ function WatchContent() {
             </div>
             <button
               onClick={() => setIsSubscribed(!isSubscribed)}
-              className={`ml-3 font-semibold text-sm px-4 py-2 rounded-full cursor-pointer transition ${
-                isSubscribed
+              className={`ml-3 font-semibold text-sm px-4 py-2 rounded-full cursor-pointer transition ${isSubscribed
                   ? "bg-zinc-800 text-white hover:bg-zinc-700"
                   : "bg-white text-black hover:bg-zinc-200"
-              }`}
+                }`}
             >
               {isSubscribed ? "Subscribed" : "Subscribe"}
             </button>
@@ -162,24 +162,28 @@ function WatchContent() {
             <div className="flex items-center bg-zinc-800 rounded-full">
               <button
                 onClick={handleLike}
-                className={`flex items-center gap-2 px-4 py-2 hover:bg-zinc-700 rounded-l-full border-r border-zinc-700 cursor-pointer ${
-                  liked ? "text-blue-400 font-bold" : ""
-                }`}
+                className={`flex items-center gap-2 px-4 py-2 hover:bg-zinc-700 rounded-l-full border-r border-zinc-700 cursor-pointer ${liked ? "text-blue-400 font-bold" : ""
+                  }`}
               >
                 <ThumbsUp className="w-4 h-4" /> {likesCount}
               </button>
               <button
                 onClick={handleDislike}
-                className={`px-3 py-2 hover:bg-zinc-700 rounded-r-full cursor-pointer ${
-                  disliked ? "text-red-400" : ""
-                }`}
+                className={`px-3 py-2 hover:bg-zinc-700 rounded-r-full cursor-pointer ${disliked ? "text-red-400" : ""
+                  }`}
               >
                 <ThumbsDown className="w-4 h-4" />
               </button>
             </div>
-            <button className="flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 px-4 py-2 rounded-full cursor-pointer">
+
+            {/* SHARE BUTTON CALLS PARENT STATE */}
+            <button
+              onClick={() => onOpenShare(video.title)}
+              className="flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 px-4 py-2 rounded-full cursor-pointer transition text-white"
+            >
               <Share2 className="w-4 h-4" /> Share
             </button>
+
             <button className="flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 px-4 py-2 rounded-full cursor-pointer">
               <Download className="w-4 h-4" /> Download
             </button>
@@ -267,14 +271,20 @@ function WatchContent() {
 export default function WatchPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
+  // State handles Modal globally outside scroll containers
+  const [isShareOpen, setIsShareOpen] = useState(false);
+  const [activeVideoTitle, setActiveVideoTitle] = useState("");
+
+  const handleOpenShare = (title: string) => {
+    setActiveVideoTitle(title);
+    setIsShareOpen(true);
+  };
+
   return (
-    <div className="bg-[#0f0f0f] text-white min-h-screen w-full">
+    <div className="bg-[#0f0f0f] text-white min-h-screen w-full relative">
       {/* Sticky Top Header */}
-      <div className="sticky top-0 z-50 w-full bg-[#0f0f0f]">
-        <Header
-          onToggleSidebar={() => setDrawerOpen(!drawerOpen)}
-          onSearch={(query) => console.log(query)}
-        />
+      <div className="sticky top-0 z-40 w-full bg-[#0f0f0f]">
+        <Header onSearch={(query) => console.log(query)} />
       </div>
 
       <SidebarDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
@@ -288,9 +298,16 @@ export default function WatchPage() {
         }}
       >
         <Suspense fallback={<div className="p-6 text-zinc-400">Loading watch view...</div>}>
-          <WatchContent />
+          <WatchContent onOpenShare={handleOpenShare} />
         </Suspense>
       </main>
+
+      {/* SHARE MODAL MOVED OUTSIDE FOR TOPMOST Z-INDEX OVERLAY */}
+      <ShareModal
+        isOpen={isShareOpen}
+        onClose={() => setIsShareOpen(false)}
+        videoTitle={activeVideoTitle}
+      />
     </div>
   );
 }

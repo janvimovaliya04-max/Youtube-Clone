@@ -1,10 +1,12 @@
 "use client";
 
+import { toggleLikeVideo, isVideoLiked } from "@/utils/likes";
 import { useEffect, useState, use } from "react";
 import VideoActions from "@/components/VideoActions";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import VideoCard from "@/components/VideoCard";
+import ShareModal from "@/components/ShareModal"; // Imported ShareModal
 import { getVideos, Video } from "@/services/api";
 import {
   ThumbsUp,
@@ -36,6 +38,9 @@ export default function WatchPage({ params }: { params: Promise<{ id: string }> 
   const [disliked, setDisliked] = useState(false);
   const [likeCount, setLikeCount] = useState(12400);
 
+  // Share Modal State
+  const [isShareOpen, setIsShareOpen] = useState(false);
+
   // Comments State
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState("");
@@ -50,13 +55,7 @@ export default function WatchPage({ params }: { params: Promise<{ id: string }> 
 
       // Load Saved Likes from LocalStorage
       if (videoId) {
-        const savedLikes = localStorage.getItem(`yt_like_${videoId}`);
-        if (savedLikes) {
-          const data = JSON.parse(savedLikes);
-          setLiked(data.liked || false);
-          setDisliked(data.disliked || false);
-          setLikeCount(data.count || 12400);
-        }
+        setLiked(isVideoLiked(videoId));
 
         // Load Saved Comments from LocalStorage
         const savedComments = localStorage.getItem(`yt_comments_${videoId}`);
@@ -90,37 +89,29 @@ export default function WatchPage({ params }: { params: Promise<{ id: string }> 
 
   // Like Toggle Handler
   const handleLike = () => {
-    let nextLiked = !liked;
-    let nextDisliked = false;
-    let nextCount = nextLiked ? likeCount + 1 : likeCount - 1;
+    if (!video) return;
+
+    const isNowLiked = toggleLikeVideo(video);
+    setLiked(isNowLiked);
 
     if (disliked) {
       setDisliked(false);
     }
 
-    setLiked(nextLiked);
-    setLikeCount(nextCount);
-
-    localStorage.setItem(
-      `yt_like_${videoId}`,
-      JSON.stringify({ liked: nextLiked, disliked: nextDisliked, count: nextCount })
-    );
+    setLikeCount((prev) => (isNowLiked ? prev + 1 : prev - 1));
   };
 
   // Dislike Toggle Handler
   const handleDislike = () => {
-    let nextDisliked = !disliked;
-    let nextLiked = false;
-    let nextCount = liked ? likeCount - 1 : likeCount;
+    if (!video) return;
 
-    setLiked(false);
-    setDisliked(nextDisliked);
-    setLikeCount(nextCount);
+    if (liked) {
+      toggleLikeVideo(video);
+      setLiked(false);
+      setLikeCount((prev) => prev - 1);
+    }
 
-    localStorage.setItem(
-      `yt_like_${videoId}`,
-      JSON.stringify({ liked: nextLiked, disliked: nextDisliked, count: nextCount })
-    );
+    setDisliked(!disliked);
   };
 
   // Add Comment Handler
@@ -152,29 +143,31 @@ export default function WatchPage({ params }: { params: Promise<{ id: string }> 
   }
 
   return (
-    <div className="h-screen bg-linear-to-br from-zinc-950 via-zinc-900 to-black text-white flex flex-col overflow-hidden">
-      {/* Sticky Header */}
-      <div className="shrink-0 z-50">
-        <Header
-          onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
-          onSearch={() => {}}
-        />
-      </div>
+    // 🚀 1. Main Outer Wrapper (Sidebar Left, Content Right)
+    <div className="flex h-screen w-screen overflow-hidden bg-[#0a0a0c] text-white">
 
-      <div className="flex flex-1 overflow-hidden relative">
-        <Sidebar isOpen={sidebarOpen} />
+      {/* 🚀 2. LEFT SIDE: Full-Height Sidebar */}
+      <Sidebar
+        isOpen={sidebarOpen}
+        onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+      />
+
+      {/* 🚀 3. RIGHT SIDE: Header + Main Content */}
+      <div className="flex flex-col flex-1 h-full overflow-hidden">
+
+        {/* Header */}
+        <Header onSearch={() => { }} />
 
         {/* Scrollable Main View Engine */}
-        <main className="flex-1 p-4 lg:p-6 overflow-y-auto h-[calc(100vh-64px)] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-white/20 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-white/40">
+        <main className="flex-1 p-4 lg:p-6 overflow-y-auto w-full min-w-0 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-white/20 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-white/40">
           <div className="flex flex-col lg:flex-row gap-6 max-w-[1700px] mx-auto w-full pb-24">
             {/* Main Video Section */}
             <div className="flex-1 flex flex-col gap-4 min-w-0">
               {/* Player Container */}
               <div className="aspect-video w-full rounded-3xl overflow-hidden bg-black/60 border border-white/10 shadow-2xl relative shrink-0">
                 <iframe
-                  src={`https://www.youtube.com/embed/${
-                    video.youtubeId || "dQw4w9WgXcQ"
-                  }?autoplay=1`}
+                  src={`https://www.youtube.com/embed/${video.youtubeId || "dQw4w9WgXcQ"
+                    }?autoplay=1`}
                   title={video.title}
                   className="w-full h-full border-none"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -222,11 +215,10 @@ export default function WatchPage({ params }: { params: Promise<{ id: string }> 
                       {/* Like Button */}
                       <button
                         onClick={handleLike}
-                        className={`flex items-center gap-2 px-4 py-2 transition-all text-sm font-medium cursor-pointer ${
-                          liked
-                            ? "bg-cyan-500 text-black font-bold"
-                            : "hover:bg-white/10 text-white"
-                        }`}
+                        className={`flex items-center gap-2 px-4 py-2 transition-all text-sm font-medium cursor-pointer ${liked
+                          ? "bg-cyan-500 text-black font-bold"
+                          : "hover:bg-white/10 text-white"
+                          }`}
                       >
                         <ThumbsUp
                           size={18}
@@ -240,11 +232,10 @@ export default function WatchPage({ params }: { params: Promise<{ id: string }> 
                       {/* Dislike Button */}
                       <button
                         onClick={handleDislike}
-                        className={`px-3 py-2 transition-all cursor-pointer ${
-                          disliked
-                            ? "bg-red-500/30 text-red-400"
-                            : "hover:bg-white/10 text-white"
-                        }`}
+                        className={`px-3 py-2 transition-all cursor-pointer ${disliked
+                          ? "bg-red-500/30 text-red-400"
+                          : "hover:bg-white/10 text-white"
+                          }`}
                       >
                         <ThumbsDown
                           size={18}
@@ -253,8 +244,9 @@ export default function WatchPage({ params }: { params: Promise<{ id: string }> 
                       </button>
                     </div>
 
+                    {/* Share Button Opens Modal Now */}
                     <button
-                      onClick={() => alert("Video link copied to clipboard!")}
+                      onClick={() => setIsShareOpen(true)}
                       className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/10 border border-white/15 hover:bg-white/15 transition-colors text-sm font-medium cursor-pointer"
                     >
                       <Share2 size={18} />
@@ -356,6 +348,13 @@ export default function WatchPage({ params }: { params: Promise<{ id: string }> 
           </div>
         </main>
       </div>
+
+      {/* Share Modal Integration */}
+      <ShareModal
+        isOpen={isShareOpen}
+        onClose={() => setIsShareOpen(false)}
+        videoTitle={video.title}
+      />
     </div>
   );
 }

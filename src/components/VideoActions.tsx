@@ -69,11 +69,10 @@ export default function VideoActions({
         {/* Dynamic Subscribe Button */}
         <button
           onClick={() => setIsSubscribed(!isSubscribed)}
-          className={`ml-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 flex items-center gap-2 ${
-            isSubscribed
-              ? "bg-white/10 text-zinc-300 border border-white/20 hover:bg-white/20"
-              : "bg-red-600 hover:bg-red-500 text-white shadow-lg shadow-red-600/30 active:scale-95"
-          }`}
+          className={`ml-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 flex items-center gap-2 ${isSubscribed
+            ? "bg-white/10 text-zinc-300 border border-white/20 hover:bg-white/20"
+            : "bg-red-600 hover:bg-red-500 text-white shadow-lg shadow-red-600/30 active:scale-95"
+            }`}
         >
           {isSubscribed ? (
             <>
@@ -82,61 +81,6 @@ export default function VideoActions({
             </>
           ) : (
             <span>Subscribe</span>
-          )}
-        </button>
-      </div>
-
-      {/* Like, Dislike & Share Button Group */}
-      <div className="flex items-center gap-3">
-        {/* Like & Dislike Pills */}
-        <div className="flex items-center bg-white/5 border border-white/10 backdrop-blur-md rounded-full p-1">
-          <button
-            onClick={handleLike}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-l-full text-sm font-medium transition-all ${
-              isLiked
-                ? "text-blue-400 bg-white/10"
-                : "text-zinc-300 hover:bg-white/10"
-            }`}
-          >
-            <ThumbsUp
-              className={`w-4 h-4 ${isLiked ? "fill-current text-blue-400" : ""}`}
-            />
-            <span>{likesCount.toLocaleString()}</span>
-          </button>
-
-          <div className="w-px h-4 bg-white/10" />
-
-          <button
-            onClick={handleDislike}
-            className={`px-3 py-1.5 rounded-r-full text-sm font-medium transition-all ${
-              isDisliked
-                ? "text-red-400 bg-white/10"
-                : "text-zinc-300 hover:bg-white/10"
-            }`}
-          >
-            <ThumbsDown
-              className={`w-4 h-4 ${
-                isDisliked ? "fill-current text-red-400" : ""
-              }`}
-            />
-          </button>
-        </div>
-
-        {/* Glassmorphic Share Button */}
-        <button
-          onClick={handleShare}
-          className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 backdrop-blur-md hover:bg-white/10 rounded-full text-sm font-medium text-zinc-300 transition-all active:scale-95"
-        >
-          {copied ? (
-            <>
-              <Check className="w-4 h-4 text-green-400" />
-              <span className="text-green-400">Copied!</span>
-            </>
-          ) : (
-            <>
-              <Share2 className="w-4 h-4" />
-              <span>Share</span>
-            </>
           )}
         </button>
       </div>

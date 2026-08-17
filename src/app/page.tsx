@@ -37,14 +37,6 @@ export default function Home() {
     }
   };
 
-  useEffect(() => {
-    async function load() {
-      const data = await getVideos();
-      setVideos(data);
-    }
-    load();
-  }, []);
-
   // 1. Edit Button Click Thava Par Call Thase
   const handleOpenEditModal = (video: Video) => {
     setEditingVideo(video);
@@ -72,30 +64,24 @@ export default function Home() {
   });
 
   return (
-    <div className="bg-[#0a0a0c] text-white min-h-screen w-full">
-      {/* Header Sticky at Top */}
-      <div className="sticky top-0 z-50 w-full bg-[#0a0a0c]">
-        <Header
-          onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
-          onSearch={(query) => setSearchQuery(query)}
-        />
-      </div>
+    // 1. Main Outer Wrapper (Sidebar Left, Content Right)
+    <div className="flex h-screen w-screen overflow-hidden bg-[#0a0a0c] text-white">
 
-      {/* Main Body Container */}
-      <div className="flex w-full pt-2">
+      {/* 2. LEFT SIDE: Full-Height Sidebar (Top to Bottom) */}
+      <Sidebar
+        isOpen={sidebarOpen}
+        onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+      />
 
-        {/* Fixed Left Sidebar Wrapper */}
-        <Sidebar isOpen={sidebarOpen} />
+      {/* 3. RIGHT SIDE: Header + Main Scrollable Area */}
+      <div className="flex flex-col flex-1 h-full overflow-hidden">
 
-        {/* Main Content Container - Directly Target Vertical Scroll */}
-        <main
-          className={`flex-1 min-w-0 p-4 lg:p-6 transition-all duration-300 ${sidebarOpen ? "ml-0" : ""
-            }`}
-          style={{
-            height: "calc(100vh - 70px)",
-            overflowY: "scroll",
-          }}
-        >
+        {/* Top Header (Sidebar ni bajuma aavse) */}
+        <Header onSearch={(q) => setSearchQuery(q)} />
+
+        {/* Scrollable Main Content */}
+        <main className="flex-1 overflow-y-auto p-4 lg:p-6">
+
           {/* Category Chips */}
           <div className="mb-6">
             <CategoryPills

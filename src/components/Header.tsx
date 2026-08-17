@@ -1,20 +1,45 @@
 "use client";
 
-import React, { useState } from "react";
-import { Menu, Search, Bell, User, Video, Mic, Plus } from "lucide-react";
 import Link from "next/link";
-import UploadModal from "@/components/UploadModal"; // 👈 1. UploadModal Import karyo
+import React, { useState, useEffect } from "react";
+import { Search, User, Mic, Plus } from "lucide-react";
+import UploadModal from "@/components/UploadModal";
 
 interface HeaderProps {
-  onToggleSidebar: () => void;
   onSearch: (query: string) => void;
-  onVideoCreated?: () => void; // 👈 Optional: Upload thaya pachhi list refresh karva
+  onVideoCreated?: () => void;
 }
 
-export default function Header({ onToggleSidebar, onSearch, onVideoCreated }: HeaderProps) {
+export default function Header({ onSearch, onVideoCreated }: HeaderProps) {
   const [query, setQuery] = useState("");
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [isUploadOpen, setIsUploadOpen] = useState(false); // 👈 2. Modal state add kari
+  const [isUploadOpen, setIsUploadOpen] = useState(false);
+
+  // Dynamic Profile State (Hardcoded ની જગ્યાએ)
+  const [userProfile, setUserProfile] = useState({
+    name: "User Name",
+    email: "user@example.com",
+  });
+
+  // LocalStorage માંથી ડેટા લોડ કરો અને Live Change સાંભળો
+  useEffect(() => {
+    const loadProfile = () => {
+      const savedName = localStorage.getItem("user_name");
+      const savedEmail = localStorage.getItem("user_email");
+
+      setUserProfile({
+        name: savedName || "User Name",
+        email: savedEmail || "user@example.com",
+      });
+    };
+
+    // 1. સૌપ્રથમ કમ્પોનન્ટ લોડ વખતે
+    loadProfile();
+
+    // 2. Settings પેજ માંથી લાઈવ ચેન્જ થાય ત્યારે તુરંત અપડેટ કરવા માટે
+    window.addEventListener("user-profile-updated", loadProfile);
+    return () => window.removeEventListener("user-profile-updated", loadProfile);
+  }, []);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,30 +50,13 @@ export default function Header({ onToggleSidebar, onSearch, onVideoCreated }: He
     <>
       <header className="sticky top-0 z-50 w-full p-3 backdrop-blur-xl bg-black/40 border-b border-white/10">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          {/* Left Section: Menu & Brand */}
-          <div className="flex items-center gap-4">
-            <button
-              onClick={onToggleSidebar}
-              className="p-2.5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/15 text-white transition-all duration-300 cursor-pointer"
-            >
-              <Menu size={20} />
-            </button>
-            <Link href="/" className="flex items-center gap-2">
-              <div className="bg-red-600 p-2 rounded-xl shadow-lg shadow-red-600/30">
-                <Video size={18} className="text-white fill-white" />
-              </div>
-              <span className="font-bold text-xl tracking-tight bg-linear-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent hidden sm:inline">
-                YouTube
-              </span>
-            </Link>
-          </div>
 
           {/* Center Section: Glassmorphic Search Bar */}
           <form
             onSubmit={handleSearchSubmit}
             className="flex-1 max-w-2xl flex items-center gap-2"
           >
-            <div className="relative w-full flex items-center">
+            <div className="relative w-full flex items-center bg-white/5 border border-white/10 rounded-2xl">
               <input
                 type="text"
                 placeholder="Search..."
@@ -91,14 +99,19 @@ export default function Header({ onToggleSidebar, onSearch, onVideoCreated }: He
 
             {/* Glassmorphic Profile Modal */}
             {isProfileOpen && (
-              <div className="absolute right-0 top-12 w-56 bg-zinc-900/80 backdrop-blur-2xl border border-white/15 p-4 rounded-3xl shadow-2xl flex flex-col gap-3 z-50">
+              <div className="absolute right-0 top-12 w-56 bg-zinc-900/90 backdrop-blur-2xl border border-white/15 p-4 rounded-3xl shadow-2xl flex flex-col gap-3 z-50">
                 <div className="flex items-center gap-3 pb-3 border-b border-white/10">
-                  <div className="w-10 h-10 rounded-2xl bg-linear-to-tr from-purple-500 to-indigo-500 flex items-center justify-center font-bold text-white">
-                    U
+                  {/* Avatar Dynamic  */}
+                  <div className="w-10 h-10 rounded-2xl bg-linear-to-tr from-purple-500 to-indigo-500 flex items-center justify-center font-bold text-white uppercase shrink-0">
+                    {userProfile.name ? userProfile.name[0] : "U"}
                   </div>
-                  <div>
-                    <p className="text-sm font-semibold text-white">User Name</p>
-                    <p className="text-xs text-zinc-400">••••@.com</p>
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-white truncate">
+                      {userProfile.name}
+                    </p>
+                    <p className="text-xs text-zinc-400 truncate">
+                      {userProfile.email}
+                    </p>
                   </div>
                 </div>
 
@@ -106,9 +119,13 @@ export default function Header({ onToggleSidebar, onSearch, onVideoCreated }: He
                   <button className="text-left px-3 py-2 rounded-xl hover:bg-white/10 transition-colors cursor-pointer">
                     Your Channel
                   </button>
-                  <button className="text-left px-3 py-2 rounded-xl hover:bg-white/10 transition-colors cursor-pointer">
+                  <Link
+                    href="/setting"
+                    onClick={() => setIsProfileOpen(false)}
+                    className="flex items-center gap-2 px-3 py-2 text-sm rounded-xl hover:bg-white/10 transition-colors cursor-pointer"
+                  >
                     Settings
-                  </button>
+                  </Link>
                   <button className="text-left px-3 py-2 rounded-xl hover:bg-white/10 text-red-400 transition-colors cursor-pointer">
                     Sign Out
                   </button>

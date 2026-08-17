@@ -47,18 +47,26 @@ export default function NotificationsPage() {
   ];
 
   return (
-    
-    <div className="h-screen bg-[#0a0a0c] text-white flex flex-col overflow-hidden">
-      <Header onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} onSearch={() => { }} />
+    // 🚀 1. Main Outer Wrapper (Sidebar Left, Content Right)
+    <div className="flex h-screen w-screen overflow-hidden bg-[#0a0a0c] text-white">
 
-      <div className="flex flex-1 overflow-hidden">
-        <Sidebar isOpen={sidebarOpen} />
+      {/* 🚀 2. LEFT SIDE: Full-Height Sidebar (Screen top to bottom) */}
+      <Sidebar
+        isOpen={sidebarOpen}
+        onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+      />
 
-        {/* main tag par h-[calc(100vh-64px)] ane overflow-y-auto add karyu */}
-        <main className="flex-1 p-4 lg:p-6 overflow-y-auto overflow-x-hidden min-w-0 h-[calc(100vh-64px)]">
+      {/* 🚀 3. RIGHT SIDE: Header + Main Content */}
+      <div className="flex flex-col flex-1 h-full overflow-hidden">
+
+        {/* Header (Sidebar ni bajuma) */}
+        <Header onSearch={() => { }} />
+
+        {/* Main Scrollable Area */}
+        <main className="flex-1 p-4 lg:p-6 overflow-y-auto overflow-x-hidden min-w-0">
 
           <div className="flex flex-row items-center gap-2 mb-6">
-            <Bell size={25} />
+            <Bell size={25} className="text-cyan-400" />
             <span className="text-lg font-bold text-white whitespace-nowrap">
               Notifications
             </span>

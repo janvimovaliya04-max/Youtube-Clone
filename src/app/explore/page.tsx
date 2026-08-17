@@ -37,12 +37,6 @@ export default function ExplorePage() {
         }
     };
 
-    const handleWheel = (e: React.WheelEvent) => {
-        if (scrollContainerRef.current && e.deltaY !== 0) {
-            scrollContainerRef.current.scrollLeft += e.deltaY;
-        }
-    };
-
     const handleCategorySelect = (category: string) => {
         setActiveCategory(category);
         if (category === "All") {
@@ -67,25 +61,31 @@ export default function ExplorePage() {
     };
 
     return (
-        <div className="h-screen bg-[#0a0a0c] text-white flex flex-col overflow-hidden">
-            <Header
+        // 🚀 1. Main Outer Wrapper (Sidebar Left, Content Right)
+        <div className="flex h-screen w-screen overflow-hidden bg-[#0a0a0c] text-white">
+
+            {/* 🚀 2. LEFT SIDE: Full-Height Sidebar (Screen top to bottom) */}
+            <Sidebar
+                isOpen={sidebarOpen}
                 onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
-                onSearch={handleSearch}
             />
 
-            <div className="flex flex-1 overflow-hidden">
-                <Sidebar isOpen={sidebarOpen} />
+            {/* 🚀 3. RIGHT SIDE: Header + Main Content */}
+            <div className="flex flex-col flex-1 h-full overflow-hidden">
 
-                {/* MAIN CONTAINER: overflow-y-auto added for card scrolling */}
+                {/* Header (Sidebar ni bajuma) */}
+                <Header onSearch={handleSearch} />
+
+                {/* MAIN SCROLLABLE CONTAINER */}
                 <main className="flex-1 p-4 lg:p-6 overflow-y-auto min-w-0 h-full
-                         [&::-webkit-scrollbar]:w-2
-                         [&::-webkit-scrollbar-track]:bg-transparent
-                         [&::-webkit-scrollbar-thumb]:bg-white/10
-                         [&::-webkit-scrollbar-thumb]:rounded-full
-                         hover:[&::-webkit-scrollbar-thumb]:bg-cyan-500/50">
+                                 [&::-webkit-scrollbar]:w-2
+                                 [&::-webkit-scrollbar-track]:bg-transparent
+                                 [&::-webkit-scrollbar-thumb]:bg-white/10
+                                 [&::-webkit-scrollbar-thumb]:rounded-full
+                                 hover:[&::-webkit-scrollbar-thumb]:bg-cyan-500/50">
 
-                    <div className="flex flex-row items-center gap-2">
-                        <Compass size={25} />
+                    <div className="flex flex-row items-center gap-2 mb-6">
+                        <Compass size={25} className="text-cyan-400" />
                         <span className="text-lg font-bold text-white whitespace-nowrap">
                             Trending &amp; Explore
                         </span>
@@ -100,7 +100,6 @@ export default function ExplorePage() {
                         >
                             <ChevronLeft size={18} />
                         </button>
-
 
                         <button
                             type="button"
@@ -124,7 +123,7 @@ export default function ExplorePage() {
                     ) : filteredVideos.length === 0 ? (
                         <div className="text-center py-16 bg-white/5 border border-white/10 rounded-3xl">
                             <p className="text-zinc-400">
-                                No videos found in "{activeCategory}" category.
+                                No videos found in &quot;{activeCategory}&quot; category.
                             </p>
                         </div>
                     ) : (

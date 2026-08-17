@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Video, createVideo } from "@/services/api"; // 👈 createVideo ya addVideo import karo
+import { Video, createVideo } from "@/services/api";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import {
@@ -20,18 +20,15 @@ export default function TrashPage() {
     }, []);
 
     const handleRestore = async (id: string) => {
-        // 1. LocalStorage trash mathi video melvo
         const restoredVideo = restoreFromTrash(id);
 
         if (restoredVideo) {
-            // 2. MockAPI / Main Store ma paacho add karo
             try {
-                await createVideo(restoredVideo); // Tamaro backend / API create function
+                await createVideo(restoredVideo);
             } catch (err) {
                 console.log("Error restoring to API, local restore done.");
             }
 
-            // 3. Trash state update karo
             setTrashVideos(getTrashVideos());
             alert(`"${restoredVideo.title}" restored successfully! Go to Home page.`);
         }
@@ -45,16 +42,23 @@ export default function TrashPage() {
     };
 
     return (
-        <div className="h-screen bg-[#0a0a0c] text-white flex flex-col overflow-hidden">
-            <Header
+        // 🚀 1. Main Outer Wrapper (Sidebar Left, Content Right)
+        <div className="flex h-screen w-screen overflow-hidden bg-[#0a0a0c] text-white">
+
+            {/* 🚀 2. LEFT SIDE: Full-Height Sidebar */}
+            <Sidebar
+                isOpen={sidebarOpen}
                 onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
-                onSearch={() => { }}
             />
 
-            <div className="flex flex-1 overflow-hidden">
-                <Sidebar isOpen={sidebarOpen} />
+            {/* 🚀 3. RIGHT SIDE: Header + Main Content */}
+            <div className="flex flex-col flex-1 h-full overflow-hidden">
 
-                <main className="flex-1 p-4 lg:p-6 overflow-y-auto min-w-0 h-full">
+                {/* Header */}
+                <Header onSearch={() => { }} />
+
+                {/* Main Scrollable Content */}
+                <main className="flex-1 p-4 lg:p-6 overflow-y-auto min-w-0">
                     <div className="flex flex-row items-center gap-2 mb-6">
                         <Trash2 className="text-red-400" size={28} />
                         <span className="text-lg font-bold text-white whitespace-nowrap">
